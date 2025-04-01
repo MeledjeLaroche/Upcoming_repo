@@ -1,0 +1,75 @@
+import pprint # Pour un affichage plus lisible du dictionnaire
+
+# --- Définition de la structure du tableau ---
+
+# Catégories principales (lignes de premier niveau)
+categories_principales = ['WC', 'VC2', 'VC3']
+
+# Sous-lignes pour chaque catégorie principale
+# (Basé sur l'interprétation de l'image)
+sous_lignes = {
+    'WC': ['Aqua', 'Cag', 'Ar1', 'Ar2', 'TOTAL'],
+    'VC2': ['Atha', 'Ath2', 'TOTAL'], # Supposons ces lignes pour VC2
+    'VC3': ['Atha', 'TOTAL']       # Supposons ces lignes pour VC3
+}
+
+# Sous-colonnes pour "Non traité"
+colonnes_non_traite = ['Ma', 'Ms', 'Md', 'RA'] # Interprétation des colonnes visibles
+
+# Sous-colonnes pour "Traité"
+colonnes_traite = ['Ma', 'Ms', 'Md', 'Rg', '-'] # Interprétation des colonnes visibles
+
+# --- Création dynamique du tableau avec des dictionnaires ---
+
+tableau_data = {}
+
+# Fonction pour créer la structure d'une ligne (avec les groupes de colonnes)
+def creer_structure_ligne_vide():
+  """Crée un dictionnaire représentant une ligne complète avec des valeurs vides."""
+  return {
+      'Non traité': {col: None for col in colonnes_non_traite},
+      'Traité': {col: None for col in colonnes_traite}
+  }
+
+# Remplissage dynamique du dictionnaire principal
+for categorie in categories_principales:
+  tableau_data[categorie] = {}
+  # Vérifie si la catégorie a des sous-lignes définies
+  if categorie in sous_lignes:
+    for sous_ligne in sous_lignes[categorie]:
+      tableau_data[categorie][sous_ligne] = creer_structure_ligne_vide()
+  else:
+    # Si une catégorie n'a pas de sous-lignes spécifiques (peu probable ici mais possible)
+    # On pourrait lui assigner directement la structure de ligne
+    # tableau_data[categorie] = creer_structure_ligne_vide()
+    print(f"Avertissement: Pas de sous-lignes définies pour {categorie}")
+
+
+# Ajout de la ligne "GRAND TOTAL" finale (si elle est séparée des catégories)
+# Si le "TOTAL" dans l'image à la fin est un total général
+tableau_data['GRAND_TOTAL'] = creer_structure_ligne_vide()
+
+# --- Affichage du tableau (structure du dictionnaire) ---
+
+print("Structure du dictionnaire représentant le tableau :")
+pprint.pprint(tableau_data, indent=2) # indent=2 pour une meilleure lisibilité
+
+# --- Exemple pour accéder ou modifier une valeur ---
+
+print("\n--- Exemple d'accès et de modification ---")
+
+# Accéder à la valeur de WC -> Aqua -> Non traité -> Ma
+valeur_wc_aqua_nt_ma = tableau_data['WC']['Aqua']['Non traité']['Ma']
+print(f"Valeur initiale [WC][Aqua][Non traité][Ma] : {valeur_wc_aqua_nt_ma}")
+
+# Modifier la valeur
+tableau_data['WC']['Aqua']['Non traité']['Ma'] = 50
+print("Modification de [WC][Aqua][Non traité][Ma] à 50")
+
+# Vérifier la nouvelle valeur
+nouvelle_valeur = tableau_data['WC']['Aqua']['Non traité']['Ma']
+print(f"Nouvelle valeur [WC][Aqua][Non traité][Ma] : {nouvelle_valeur}")
+
+# Afficher la ligne modifiée
+print("\nLigne WC -> Aqua après modification :")
+pprint.pprint(tableau_data['WC']['Aqua'], indent=2)

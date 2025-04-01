@@ -1,0 +1,81 @@
+import pandas as pd
+
+def create_dynamic_table(data):
+    # Définition des groupes de colonnes
+    groupes = ["Non Traités", "Traités", "Encours"]
+    sous_colonnes = ["ACT", "DECOUVERT", "ECHUE", "A ECHOIR", "DEPASSEMENT PT"]
+    
+    multi_index_columns = [(groupe, col) for groupe in groupes for col in sous_colonnes]
+    
+    # Initialisation de la structure du tableau
+    table_structure = {("UC", ""): [], ("Agence", ""): []}
+    for col in multi_index_columns:
+        table_structure[col] = []
+    table_structure[("Total Agence", "")] = []  # Somme horizontale
+    
+    # Remplissage des données
+    uc_totals = {col: 0 for col in multi_index_columns}  # Totaux par UC
+    global_totals = {col: 0 for col in multi_index_columns}  # Totaux globaux
+    
+    for uc, agences in data.items():
+        uc_first_row = True
+        uc_row_totals = {col: 0 for col in multi_index_columns}
+        
+        for agence, values in agences.items():
+            table_structure[("UC", "")].append(uc if uc_first_row else "")
+            table_structure[("Agence", "")].append(agence)
+            
+            row_total = 0
+            for col in multi_index_columns:
+                value = values.get(f"{col[0]} {col[1]}", 0)
+                table_structure[col].append(value)
+                uc_row_totals[col] += value
+                global_totals[col] += value
+                row_total += value
+            
+            table_structure[("Total Agence", "")].append(row_total)
+            uc_first_row = False
+        
+        # Ajouter la ligne de total UC
+        table_structure[("UC", "")].append(uc + " Total")
+        table_structure[("Agence", "")].append("-")
+        for col in multi_index_columns:
+            table_structure[col].append(uc_row_totals[col])
+        table_structure[("Total Agence", "")].append(sum(uc_row_totals.values()))
+    
+    # Ajouter la ligne de total général
+    table_structure[("UC", "")].append("Total Général")
+    table_structure[("Agence", "")].append("-")
+    for col in multi_index_columns:
+        table_structure[col].append(global_totals[col])
+    table_structure[("Total Agence", "")].append(sum(global_totals.values()))
+    
+    # Création du DataFrame avec MultiIndex pour les colonnes
+    df = pd.DataFrame(table_structure)
+    df.columns = pd.MultiIndex.from_tuples(df.columns)
+    
+    return df
+
+# Exemple de données dynamiques
+data = {
+    "UC1": {
+        "Agence A": {"Non Traités ACT": 100, "Non Traités DECOUVERT": 50, "Non Traités ECHUE": 60, "Non Traités A ECHOIR": 40, "Non Traités DEPASSEMENT PT": 20,
+                       "Traités ACT": 80, "Traités DECOUVERT": 40, "Traités ECHUE": 50, "Traités A ECHOIR": 30, "Traités DEPASSEMENT PT": 15,
+                       "Encours ACT": 30, "Encours DECOUVERT": 20, "Encours ECHUE": 25, "Encours A ECHOIR": 15, "Encours DEPASSEMENT PT": 10},
+        "Agence B": {"Non Traités ACT": 200, "Non Traités DECOUVERT": 80, "Non Traités ECHUE": 90, "Non Traités A ECHOIR": 60, "Non Traités DEPASSEMENT PT": 30,
+                       "Traités ACT": 150, "Traités DECOUVERT": 70, "Traités ECHUE": 80, "Traités A ECHOIR": 50, "Traités DEPASSEMENT PT": 25,
+                       "Encours ACT": 50, "Encours DECOUVERT": 30, "Encours ECHUE": 35, "Encours A ECHOIR": 20, "Encours DEPASSEMENT PT": 15}
+    },
+    "UC2": {
+        "Agence C": {"Non Traités ACT": 150, "Non Traités DECOUVERT": 60, "Non Traités ECHUE": 70, "Non Traités A ECHOIR": 50, "Non Traités DEPASSEMENT PT": 25,
+                       "Traités ACT": 120, "Traités DECOUVERT": 50, "Traités ECHUE": 60, "Traités A ECHOIR": 40, "Traités DEPASSEMENT PT": 20,
+                       "Encours ACT": 40, "Encours DECOUVERT": 25, "Encours ECHUE": 30, "Encours A ECHOIR": 20, "Encours DEPASSEMENT PT": 15},
+        "Agence D": {"Non Traités ACT": 250, "Non Traités DECOUVERT": 90, "Non Traités ECHUE": 100, "Non Traités A ECHOIR": 80, "Non Traités DEPASSEMENT PT": 40,
+                       "Traités ACT": 180, "Traités DECOUVERT": 80, "Traités ECHUE": 90, "Traités A ECHOIR": 70, "Traités DEPASSEMENT PT": 35,
+                       "Encours ACT": 60, "Encours DECOUVERT": 40, "Encours ECHUE": 45, "Encours A ECHOIR": 30, "Encours DEPASSEMENT PT": 20}
+    }
+}
+
+# Affichage du tableau
+df = create_dynamic_table(data)
+print(df)
