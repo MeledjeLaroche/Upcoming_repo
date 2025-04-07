@@ -1,0 +1,42 @@
+. **Les docstrings
+Lorsqu'on écrit un module, il est important de créer de la documentation pour expliquer ce que fait le module et comment utiliser chaque fonction. Les chaînes de caractères entre triple guillemets, situées en début du module et de chaque fonction, sont là pour cela : on les appelle docstrings (« chaînes de documentation » en français)
+Les docstrings permettent notamment de fournir de l'aide lorsqu'on invoque la commande help() 
+les docstrings sont destinés aux utilisateurs du module. Leur but est différent des commentaires qui, eux, sont destinés à celui qui lit le code (pour en comprendre les subtilités). Une bonne docstring de fonction doit contenir tout ce dont un utilisateur a besoin pour utiliser cette fonction. Une liste minimale et non exhaustive serait :
+
+ce que fait la fonction,
+ce qu'elle prend en argument,
+ce qu'elle renvoie.
+
+** De la bonne syntaxe avec la PEP 8
+La PEP 8 Style Guide for Python Code est une des plus anciennes PEP (les numéros sont croissants avec le temps). Elle consiste en un nombre important de recommandations sur la syntaxe de Python. Il est vivement recommandé de lire la PEP 8 en entier au moins une fois pour avoir une bonne vue d'ensemble. On ne présentera ici qu'un rapide résumé de cette PEP 8.
+
+
+*Règles de nommage
+Les noms de variables, de fonctions et de modules doivent être de la forme :
+ma_variable
+fonction_test_27()
+mon_module
+c'est-à-dire en minuscules avec un « tiret du bas », ou underscore en anglais pour séparer les différents « mots » dans le nom.
+Les constantes sont écrites en majuscules :
+MA_CONSTANTE
+VITESSE_LUMIERE
+Les noms de classes sont de la forme :
+MaClasse
+MyException
+
+ Remarque
+Le style recommandé pour nommer les variables et les fonctions en Python est appelé snake_case. Il est différent du CamelCase utilisé pour les noms des classes et des exceptions.
+La variable _ est habituellement employée pour stocker des valeurs qui ne seront pas utilisées par la suite. Par exemple, dans le cas d'une affectation multiple, on peut utiliser _ pour stocker une valeur qui ne nous intéresse pas.
+Pensez à donner à vos variables des noms qui ont du sens. Évitez autant que possible les a1, a2, i, truc, toto... Les noms de variables à un caractère sont néanmoins autorisés pour les indices dans les boucles.
+
+*Gestion des espaces
+La PEP 8 recommande d'entourer les opérateurs (+, -, /, *, ==, !=, >=, not, in, and, or...) d'un espace avant et d'un espace après. Par exemple :
+
+# Code recommandé :
+ma_variable = 3 + 7
+mon_texte = "souris"
+mon_texte == ma_variable
+
+*Longueur de ligne
+Une ligne de code ne doit pas dépasser 79 caractères, pour des raisons tant historiques que de lisibilité.
+La PEP 8 recommande d'écrire les commentaires en anglais, sauf si vous êtes absolument certains que votre code ne sera lu que par des francophones. Dans la mesure où vous allez souvent développer des programmes scientifiques, nous vous conseillons d'écrire vos commentaires en anglais.
